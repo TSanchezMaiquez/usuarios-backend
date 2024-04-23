@@ -5,7 +5,10 @@
   * 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
   
         annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
-  
+
+
+
+* Añadir ficheros de base de datos a gitignore
 
 
 REPOSITORIO: 
@@ -37,3 +40,6 @@ RestController:
 - propiedad de la interface service
 
 - anotacion @RestController
+- @CrossOrigin: permite que los navegadores web realicen solicitudes al controlador 
+ desde un origen diferente al de la aplicación. 
+Si no la ponemos, cuando el frontend intente recuperar datos recibira el error: CORS error
