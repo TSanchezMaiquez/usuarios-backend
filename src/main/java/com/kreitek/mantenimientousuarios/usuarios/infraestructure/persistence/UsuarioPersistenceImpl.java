@@ -2,7 +2,11 @@ package com.kreitek.mantenimientousuarios.usuarios.infraestructure.persistence;
 
 import com.kreitek.mantenimientousuarios.usuarios.domain.entity.Usuario;
 import com.kreitek.mantenimientousuarios.usuarios.domain.persistence.UsuarioPersistence;
+import com.kreitek.mantenimientousuarios.usuarios.specs.UserSpecification;
+import com.kreitek.mantenimientousuarios.usuarios.specs.shared.SearchCriteriaHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,4 +39,12 @@ public class UsuarioPersistenceImpl implements UsuarioPersistence {
     public void deleteUser(Long usuarioId) {
         usuarioRepository.deleteById(usuarioId);
     }
+
+    @Override
+    public Page<Usuario> findAll(Pageable pageable, String filter) {
+        UserSpecification specification = new UserSpecification(SearchCriteriaHelper.fromFilterString(filter));
+        return usuarioRepository.findAll(specification, pageable);
+    }
+
+
 }

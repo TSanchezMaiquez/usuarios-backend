@@ -3,6 +3,8 @@ package com.kreitek.mantenimientousuarios.usuarios.infraestructure.rest;
 import com.kreitek.mantenimientousuarios.usuarios.application.dto.UsuarioDto;
 import com.kreitek.mantenimientousuarios.usuarios.application.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +19,12 @@ public class UsuarioRestController {
     public UsuarioRestController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
-    @CrossOrigin
+ /*   @CrossOrigin
     @GetMapping(value = "/usuarios", produces = "application/json")
     public ResponseEntity<List<UsuarioDto>> obtenerUsuarios(){
         var usuarios = usuarioService.getAllUsers();
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
-    }
+    }*/
 
     @CrossOrigin
     @GetMapping(value = "/usuarios/{usuarioId}", produces = "application/json")
@@ -40,10 +42,8 @@ public class UsuarioRestController {
         return new ResponseEntity<>(usuarioDto, HttpStatus.CREATED);
     }
     @CrossOrigin
-    @PatchMapping(value = "/usuarios/{usuarioId}", produces = "application/json")
-    public ResponseEntity<UsuarioDto> updateUser(@PathVariable Long usuarioId,
-                                                 @RequestBody UsuarioDto usuarioDto) {
-        usuarioDto.setId(usuarioId);
+    @PatchMapping(value = "/usuarios/{usuarioId}", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<UsuarioDto> updateUser(@PathVariable Long usuarioId, @RequestBody UsuarioDto usuarioDto) {
         usuarioDto = usuarioService.saveUser(usuarioDto);
         return new ResponseEntity<>(usuarioDto, HttpStatus.OK);
     }
@@ -52,5 +52,14 @@ public class UsuarioRestController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         usuarioService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "/usuarios", produces = "application/json")
+    public ResponseEntity<Page<UsuarioDto>> getUsersByCriteriaPaged(
+            @RequestParam(value = "filter", required = false) String filter, Pageable pageable) {
+
+        Page<UsuarioDto> usuarios = usuarioService.getUsersByCriteriaStringPaged(pageable,filter);
+        return new ResponseEntity<Page<UsuarioDto>>(usuarios, HttpStatus.OK);
     }
 }

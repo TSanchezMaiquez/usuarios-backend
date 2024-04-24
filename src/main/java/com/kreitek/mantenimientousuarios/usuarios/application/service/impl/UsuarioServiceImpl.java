@@ -6,6 +6,8 @@ import com.kreitek.mantenimientousuarios.usuarios.application.service.UsuarioSer
 import com.kreitek.mantenimientousuarios.usuarios.domain.entity.Usuario;
 import com.kreitek.mantenimientousuarios.usuarios.domain.persistence.UsuarioPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +40,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     public UsuarioDto saveUser(UsuarioDto usuarioDto) {
-        Usuario usuario = usuarioMapper.toEntity(usuarioDto);
-        usuario = usuarioPersistence.saveUser(usuario);
-        return usuarioMapper.toDto(usuario);
+
+        return usuarioMapper.toDto(usuarioPersistence.saveUser(usuarioMapper.toEntity(usuarioDto)));
     }
 
     @Override
@@ -48,5 +49,13 @@ public class UsuarioServiceImpl implements UsuarioService {
     public void deleteUser(Long usuarioId) {
         usuarioPersistence.deleteUser(usuarioId);
 
+    }
+
+    @Override
+    @Transactional
+    public Page<UsuarioDto> getUsersByCriteriaStringPaged(Pageable pageable, String filter) {
+
+        Page<Usuario> usersPage = this.usuarioPersistence.findAll(pageable, filter);
+        return usersPage.map(usuarioMapper::toDto);
     }
 }
