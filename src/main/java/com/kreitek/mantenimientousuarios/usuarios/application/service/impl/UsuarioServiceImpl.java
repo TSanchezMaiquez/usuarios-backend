@@ -5,7 +5,6 @@ import com.kreitek.mantenimientousuarios.usuarios.application.mapper.UsuarioMapp
 import com.kreitek.mantenimientousuarios.usuarios.application.service.UsuarioService;
 import com.kreitek.mantenimientousuarios.usuarios.domain.entity.Usuario;
 import com.kreitek.mantenimientousuarios.usuarios.domain.persistence.UsuarioPersistence;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioPersistence usuarioPersistence;
     private final UsuarioMapper usuarioMapper;
-    @Autowired
+
     public UsuarioServiceImpl(UsuarioPersistence usuarioPersistence, UsuarioMapper usuarioMapper) {
         this.usuarioPersistence = usuarioPersistence;
         this.usuarioMapper = usuarioMapper;

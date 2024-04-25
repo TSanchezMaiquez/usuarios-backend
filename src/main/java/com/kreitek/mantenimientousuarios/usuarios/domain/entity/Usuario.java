@@ -28,8 +28,7 @@ public class Usuario {
     @Column(name = "rol_usuario", nullable = false, length = 20)
     private RolUsuario rolUsuario;
 
-    public Usuario() {
-    }
+
 
     public Long getId() {
         return id;

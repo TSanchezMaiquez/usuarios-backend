@@ -2,31 +2,25 @@ package com.kreitek.mantenimientousuarios.usuarios.infraestructure.rest;
 
 import com.kreitek.mantenimientousuarios.usuarios.application.dto.UsuarioDto;
 import com.kreitek.mantenimientousuarios.usuarios.application.service.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class UsuarioRestController {
 
     private final UsuarioService usuarioService;
-    @Autowired
+
     public UsuarioRestController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
- /*   @CrossOrigin
-    @GetMapping(value = "/usuarios", produces = "application/json")
-    public ResponseEntity<List<UsuarioDto>> obtenerUsuarios(){
-        var usuarios = usuarioService.getAllUsers();
-        return new ResponseEntity<>(usuarios, HttpStatus.OK);
-    }*/
 
-    @CrossOrigin
     @GetMapping(value = "/usuarios/{usuarioId}", produces = "application/json")
     public ResponseEntity <UsuarioDto> obtenerUsuarioPorId(@PathVariable Long usuarioId){
         return usuarioService
@@ -35,31 +29,49 @@ public class UsuarioRestController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
     }
-    @CrossOrigin
+
     @PostMapping(value = "/usuarios", produces = "application/json")
     public ResponseEntity<UsuarioDto> insertUser(@RequestBody UsuarioDto usuarioDto) {
         usuarioDto = usuarioService.saveUser(usuarioDto);
         return new ResponseEntity<>(usuarioDto, HttpStatus.CREATED);
     }
-    @CrossOrigin
+
     @PatchMapping(value = "/usuarios/{usuarioId}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<UsuarioDto> updateUser(@PathVariable Long usuarioId, @RequestBody UsuarioDto usuarioDto) {
         usuarioDto = usuarioService.saveUser(usuarioDto);
         return new ResponseEntity<>(usuarioDto, HttpStatus.OK);
     }
-    @CrossOrigin
+
     @DeleteMapping(value = "/usuarios/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         usuarioService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @CrossOrigin
+
     @GetMapping(value = "/usuarios", produces = "application/json")
     public ResponseEntity<Page<UsuarioDto>> getUsersByCriteriaPaged(
-            @RequestParam(value = "filter", required = false) String filter, Pageable pageable) {
-
+            @RequestParam(value = "filter", required = false) String filter,
+            Pageable pageable,
+            @RequestParam(value = "rolUsuarioFiltro", required = false) String rolUsuarioFiltro) {
+        
         Page<UsuarioDto> usuarios = usuarioService.getUsersByCriteriaStringPaged(pageable,filter);
-        return new ResponseEntity<Page<UsuarioDto>>(usuarios, HttpStatus.OK);
+
+        Page<UsuarioDto> usuariosFiltrados = null;
+        if(rolUsuarioFiltro!=null){
+           usuariosFiltrados = filtrarPorRol(usuarios, rolUsuarioFiltro);
+            return new ResponseEntity<>(usuariosFiltrados, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(usuarios, HttpStatus.OK);
+        }
+    }
+    private Page<UsuarioDto> filtrarPorRol(Page<UsuarioDto> usuarios, String rolUsuarioFiltro) {
+        List<UsuarioDto> usuariosFiltrados = new ArrayList<>();
+        for (UsuarioDto usuario : usuarios.getContent()) {
+            if (usuario.getRolUsuario().toString().toLowerCase().contains(rolUsuarioFiltro.toLowerCase())) {
+                usuariosFiltrados.add(usuario);
+            }
+        }
+        return new PageImpl<>(usuariosFiltrados, usuarios.getPageable(), usuarios.getTotalElements());
     }
 }

@@ -13,8 +13,7 @@ public class UsuarioDto implements Serializable {
     private String email;
     private RolUsuario rolUsuario;
 
-    public UsuarioDto() {
-    }
+
 
     public Long getId() {
         return id;
@@ -54,5 +53,16 @@ public class UsuarioDto implements Serializable {
 
     public void setRolUsuario(RolUsuario rolUsuario) {
         this.rolUsuario = rolUsuario;
+    }
+
+    @Override
+    public String toString() {
+        return "UsuarioDto{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", apellidos='" + apellidos + '\'' +
+                ", email='" + email + '\'' +
+                ", rolUsuario=" + rolUsuario +
+                '}';
     }
 }
