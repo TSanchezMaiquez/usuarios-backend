@@ -24,7 +24,7 @@ public class Usuario {
     @Column(name = "email", nullable = false)
     @Size(min = 3, max = 100)
     private String email;
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "rol_usuario", nullable = false, length = 20)
     private RolUsuario rolUsuario;
 
