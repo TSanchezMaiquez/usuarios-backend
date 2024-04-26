@@ -6,10 +6,12 @@ import com.kreitek.mantenimientousuarios.usuarios.application.service.UsuarioSer
 import com.kreitek.mantenimientousuarios.usuarios.domain.entity.Usuario;
 import com.kreitek.mantenimientousuarios.usuarios.domain.persistence.UsuarioPersistence;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -56,5 +58,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         Page<Usuario> usersPage = this.usuarioPersistence.findAll(pageable, filter);
         return usersPage.map(usuarioMapper::toDto);
+    }
+
+    public Page<UsuarioDto> filtrarPorRol(Page<UsuarioDto> usuarios, String rolUsuarioFiltro) {
+        List<UsuarioDto> usuariosFiltrados = new ArrayList<>();
+        for (UsuarioDto usuario : usuarios.getContent()) {
+            if (usuario.getRolUsuario().toString().toLowerCase().contains(rolUsuarioFiltro.toLowerCase())) {
+                usuariosFiltrados.add(usuario);
+            }
+        }
+        return new PageImpl<>(usuariosFiltrados, usuarios.getPageable(), usuarios.getTotalElements());
     }
 }

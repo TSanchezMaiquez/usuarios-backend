@@ -20,7 +20,7 @@ public class UsuarioRestController {
     public UsuarioRestController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
-
+    @CrossOrigin
     @GetMapping(value = "/usuarios/{usuarioId}", produces = "application/json")
     public ResponseEntity <UsuarioDto> obtenerUsuarioPorId(@PathVariable Long usuarioId){
         return usuarioService
@@ -29,26 +29,25 @@ public class UsuarioRestController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
     }
-
+    @CrossOrigin
     @PostMapping(value = "/usuarios", produces = "application/json")
     public ResponseEntity<UsuarioDto> insertUser(@RequestBody UsuarioDto usuarioDto) {
         usuarioDto = usuarioService.saveUser(usuarioDto);
         return new ResponseEntity<>(usuarioDto, HttpStatus.CREATED);
     }
-
+    @CrossOrigin
     @PatchMapping(value = "/usuarios/{usuarioId}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<UsuarioDto> updateUser(@PathVariable Long usuarioId, @RequestBody UsuarioDto usuarioDto) {
         usuarioDto = usuarioService.saveUser(usuarioDto);
         return new ResponseEntity<>(usuarioDto, HttpStatus.OK);
     }
-
+    @CrossOrigin
     @DeleteMapping(value = "/usuarios/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         usuarioService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
+    @CrossOrigin
     @GetMapping(value = "/usuarios", produces = "application/json")
     public ResponseEntity<Page<UsuarioDto>> getUsersByCriteriaPaged(
             @RequestParam(value = "filter", required = false) String filter,
@@ -59,19 +58,11 @@ public class UsuarioRestController {
 
         Page<UsuarioDto> usuariosFiltrados = null;
         if(rolUsuarioFiltro!=null){
-           usuariosFiltrados = filtrarPorRol(usuarios, rolUsuarioFiltro);
+           usuariosFiltrados = usuarioService.filtrarPorRol(usuarios, rolUsuarioFiltro);
             return new ResponseEntity<>(usuariosFiltrados, HttpStatus.OK);
         }else{
             return new ResponseEntity<>(usuarios, HttpStatus.OK);
         }
     }
-    private Page<UsuarioDto> filtrarPorRol(Page<UsuarioDto> usuarios, String rolUsuarioFiltro) {
-        List<UsuarioDto> usuariosFiltrados = new ArrayList<>();
-        for (UsuarioDto usuario : usuarios.getContent()) {
-            if (usuario.getRolUsuario().toString().toLowerCase().contains(rolUsuarioFiltro.toLowerCase())) {
-                usuariosFiltrados.add(usuario);
-            }
-        }
-        return new PageImpl<>(usuariosFiltrados, usuarios.getPageable(), usuarios.getTotalElements());
-    }
+
 }

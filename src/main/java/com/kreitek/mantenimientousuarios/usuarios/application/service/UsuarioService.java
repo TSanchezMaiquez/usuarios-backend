@@ -12,6 +12,6 @@ public interface UsuarioService {
     Optional<UsuarioDto> getUserById(Long usuarioId);
     UsuarioDto saveUser(UsuarioDto usuarioDto);
     void deleteUser(Long usuarioId);
-
     Page<UsuarioDto> getUsersByCriteriaStringPaged(Pageable pageable, String filter);
+    Page<UsuarioDto> filtrarPorRol(Page<UsuarioDto> usuarios, String rolUsuarioFiltro);
 }
